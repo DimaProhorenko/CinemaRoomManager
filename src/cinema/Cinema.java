@@ -1,9 +1,12 @@
 package cinema;
 
+import java.util.Scanner;
+
 public class Cinema {
 	private final int rows;
 	private final int columns;
 	private final String[][] seats;
+	private final int totalSeats;
 	
 	
 	public Cinema(int[] size) {
@@ -14,8 +17,9 @@ public class Cinema {
 		this.rows = rows;
 		this.columns = columns;
 		this.seats = createSeatsArray();
+		totalSeats = this.rows * this.columns;
+		
 	}
-	
 	
 	
 	public void printSeats() {
@@ -43,6 +47,47 @@ public class Cinema {
 			System.out.println();
 		}
 	}
+	
+	public int calcTotalIncome() {
+		if (totalSeats < 60) {
+			return totalSeats * 10;
+		}
+		if (rows % 2 == 0) {
+			return (rows / 2 * columns * 10) + (rows / 2 * columns * 8); 
+		}
+		
+		return (rows / 2 * columns * 8) + ((rows / 2 + 1) * columns * 10);
+	}
+	
+	public int buyTicket() {
+		int[] seatLocation = getSeatLocationFromUser();
+//		bookSeat(seatLocation);
+		return calcSeatPrice(seatLocation);
+	}
+	
+	
+	private int calcSeatPrice(int[] seatLocation) {
+		if (totalSeats < 60) {
+			return 10;
+		}
+		if (seatLocation[0] > (rows / 2)) {
+			return 8;
+		}
+		
+		return 10;
+	}
+	
+	
+	private int[] getSeatLocationFromUser() {
+		Scanner scanner = new Scanner(System.in);
+		System.out.println("Enter a row number: ");
+		int row = scanner.nextInt();
+		System.out.println("Enter a seat number in that row: ");
+		int seat = scanner.nextInt();
+		scanner.close();
+		return new int[] {row, seat};
+	}
+	
 	
 	private String[][] createSeatsArray() {
 		String[][] result = new String[rows][columns];
