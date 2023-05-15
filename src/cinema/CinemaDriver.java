@@ -22,10 +22,18 @@ public class CinemaDriver {
 	public int getUserMenuInput() {
 		int input = -1;
 		while(input < 0 || input > 2) {
-			System.out.println("1. Show the seats\n2. Buy a ticket\n3. Exit");
+			System.out.println("1. Show the seats\n2. Buy a ticket\n0. Exit");
 			input = scanner.nextInt();
 		}
 		return input;
+	}
+	
+	public int[] getSeatPositionFromUser() {
+		System.out.println("Enter a row number: ");
+		int row = scanner.nextInt();
+		System.out.println("Enter a seat number in that row: ");
+		int seat = scanner.nextInt();
+		return new int[] {row, seat};
 	}
 	
 	public void start() {
@@ -39,7 +47,8 @@ public class CinemaDriver {
 				cinema.printSeats();
 				break;
 			case 2:
-				System.out.println(cinema.buyTicket());
+				int price = cinema.buyTicket(getSeatPositionFromUser());
+				System.out.println("Ticket price: $" + price);
 				break;
 			default:
 				System.out.println("Good bye:)");

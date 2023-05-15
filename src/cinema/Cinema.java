@@ -59,12 +59,22 @@ public class Cinema {
 		return (rows / 2 * columns * 8) + ((rows / 2 + 1) * columns * 10);
 	}
 	
-	public int buyTicket() {
-		int[] seatLocation = getSeatLocationFromUser();
-//		bookSeat(seatLocation);
+	public int buyTicket(int[] seatLocation) {
+		bookSeat(seatLocation);
 		return calcSeatPrice(seatLocation);
 	}
 	
+	
+	
+	private boolean bookSeat(int[] seatLocation) {
+		try {
+			seats[seatLocation[0]-1][seatLocation[1]-1] = "B";
+			return true;
+		} catch(IndexOutOfBoundsException e) {
+			System.out.println(e.getMessage());
+			return false;
+		}
+	}
 	
 	private int calcSeatPrice(int[] seatLocation) {
 		if (totalSeats < 60) {
@@ -75,17 +85,6 @@ public class Cinema {
 		}
 		
 		return 10;
-	}
-	
-	
-	private int[] getSeatLocationFromUser() {
-		Scanner scanner = new Scanner(System.in);
-		System.out.println("Enter a row number: ");
-		int row = scanner.nextInt();
-		System.out.println("Enter a seat number in that row: ");
-		int seat = scanner.nextInt();
-		scanner.close();
-		return new int[] {row, seat};
 	}
 	
 	
