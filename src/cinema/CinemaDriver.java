@@ -3,10 +3,11 @@ import java.util.Scanner;
 
 public class CinemaDriver {
 	private final Scanner scanner = new Scanner(System.in);
+	private final int[] cinemaSize;
 	private final Cinema cinema;
 	
 	public CinemaDriver() {
-		int[] cinemaSize = getRowsAndColsFromUser();
+		cinemaSize = getRowsAndColsFromUser();
 		cinema = new Cinema(cinemaSize);
 	}
 	
@@ -21,8 +22,8 @@ public class CinemaDriver {
 	
 	public int getUserMenuInput() {
 		int input = -1;
-		while(input < 0 || input > 2) {
-			System.out.println("1. Show the seats\n2. Buy a ticket\n0. Exit");
+		while(input < 0 || input > 3) {
+			System.out.println("1. Show the seats\n2. Buy a ticket\n3.Statistics\n0. Exit");
 			input = scanner.nextInt();
 		}
 		return input;
@@ -36,6 +37,34 @@ public class CinemaDriver {
 		return new int[] {row, seat};
 	}
 	
+	public void purchaseTicket() {
+		int[] position = new int[2];
+		boolean isSeatBooked = false;
+		boolean isSeatValid = false;
+		do {
+			position = getSeatPositionFromUser();
+			isSeatBooked = cinema.checkSeatAvailable(position);
+			isSeatValid = validateSeatLocation(position);
+			
+			if (isSeatBooked) {
+				System.out.println("That ticket has already been purchased!");
+			} else if (!isSeatValid) {
+				System.out.println("Wrong input!");
+			}
+		} while(isSeatBooked || !isSeatValid);
+		if(!isSeatBooked) {
+			int price = cinema.buyTicket(position);
+			System.out.println("Ticket price: $" + price);
+		}
+	}
+	
+	public boolean validateSeatLocation(int[] seatLocation) {
+		if (seatLocation[0] > cinemaSize[0] || seatLocation[1] > cinemaSize[1]) {
+			return false;
+		}
+		return true;
+	}
+	
 	public void start() {
 		
 		int userInput = -1;
@@ -47,8 +76,10 @@ public class CinemaDriver {
 				cinema.printSeats();
 				break;
 			case 2:
-				int price = cinema.buyTicket(getSeatPositionFromUser());
-				System.out.println("Ticket price: $" + price);
+				purchaseTicket();
+				break;
+			case 3:
+				cinema.showStatistics();
 				break;
 			default:
 				System.out.println("Good bye:)");

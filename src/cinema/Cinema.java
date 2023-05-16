@@ -1,12 +1,16 @@
 package cinema;
+import java.util.List;
+import java.util.ArrayList;
 
-import java.util.Scanner;
 
 public class Cinema {
 	private final int rows;
 	private final int columns;
 	private final String[][] seats;
+	private final List<String> bookedSeats = new ArrayList<>();
 	private final int totalSeats;
+	private int numberOfPurchasedTickets = 0;
+	private int currentIncome = 0;
 	
 	
 	public Cinema(int[] size) {
@@ -21,6 +25,9 @@ public class Cinema {
 		
 	}
 	
+	public int getNumberOfPurchasedTickets() {
+		return numberOfPurchasedTickets;
+	}
 	
 	public void printSeats() {
 		System.out.println("Cinema: ");
@@ -55,20 +62,39 @@ public class Cinema {
 		if (rows % 2 == 0) {
 			return (rows / 2 * columns * 10) + (rows / 2 * columns * 8); 
 		}
-		
-		return (rows / 2 * columns * 8) + ((rows / 2 + 1) * columns * 10);
+		// 288 + 
+		return (rows / 2 * columns * 10) + ((rows / 2 + 1) * columns * 8);
 	}
 	
 	public int buyTicket(int[] seatLocation) {
 		bookSeat(seatLocation);
-		return calcSeatPrice(seatLocation);
+		int price = calcSeatPrice(seatLocation);
+		currentIncome += price;
+		return price;
+	}
+	
+	public boolean checkSeatAvailable(int[] seatLocation) {
+		return bookedSeats.contains("" + seatLocation[0] + seatLocation[1]);
 	}
 	
 	
+	public void showStatistics() {
+		System.out.println("Number of purchased tickets: " + numberOfPurchasedTickets);
+		System.out.printf("Percentage: %.2f%%\n", getPercantageOfPurchasedTickets());
+		System.out.println("Current income: $" + currentIncome);
+		System.out.println("Total income: $" + calcTotalIncome());
+		
+	}
+	
+	public float getPercantageOfPurchasedTickets() {
+		return (float) numberOfPurchasedTickets / totalSeats * 100;
+	}
 	
 	private boolean bookSeat(int[] seatLocation) {
 		try {
 			seats[seatLocation[0]-1][seatLocation[1]-1] = "B";
+			bookedSeats.add("" + seatLocation[0] + seatLocation[1]);
+			numberOfPurchasedTickets++;
 			return true;
 		} catch(IndexOutOfBoundsException e) {
 			System.out.println(e.getMessage());
